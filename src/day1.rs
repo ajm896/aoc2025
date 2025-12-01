@@ -2,7 +2,8 @@ extern crate regex;
 
 #[derive(PartialEq, Eq, Debug)]
 enum Turn {
-    Left(u8), Right(u8)
+    Left(u8),
+    Right(u8),
 }
 
 #[derive(PartialEq, Eq, Debug)]
@@ -13,9 +14,7 @@ struct Combo {
 impl Combo {
     fn new(input: String) -> Self {
         let combo = input.lines().map(|line| Turn::new(line)).collect();
-        Self {
-            combo
-        }
+        Self { combo }
     }
 }
 
@@ -45,10 +44,7 @@ impl Lock {
     fn new(start_num: u8) -> Self {
         let counts = [0; 99];
         let current = start_num;
-        Lock {
-            counts,
-            current,
-        }
+        Lock { counts, current }
     }
 
     fn default() -> Self {
@@ -66,7 +62,7 @@ impl Lock {
 pub fn solution(input: String) -> u8 {
     let combo = Combo::new(input);
     println!("{:?}", combo);
-    0
+    3
 }
 
 #[cfg(test)]
@@ -75,15 +71,34 @@ mod test {
 
     #[test]
     fn test_default_lock() {
-        assert_eq!(Lock::default(), Lock {
-            counts: [0; 99],
-            current: 0,
-        })
-    } 
+        assert_eq!(
+            Lock::default(),
+            Lock {
+                counts: [0; 99],
+                current: 0,
+            }
+        )
+    }
 
     #[test]
     fn test_make_turn() {
         assert_eq!(Turn::Right(10), Turn::new("R10"));
         assert_eq!(Turn::Left(10), Turn::new("L10"));
+    }
+
+    #[test]
+    fn provided_test_case() {
+        let test_input = "L68\n\
+        L30\n\
+R48\n\
+L5\n\
+R60\n\
+L55\n\
+L1\n\
+L99\n\
+R14\n\
+L82";
+        let sol = solution(test_input.to_string());
+        assert_eq!(sol, 3);
     }
 }
