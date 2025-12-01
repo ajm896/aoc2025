@@ -13,7 +13,7 @@ struct Combo {
 
 impl Combo {
     fn new(input: String) -> Self {
-        let combo = input.lines().map(|line| Turn::new(line)).collect();
+        let combo = input.lines().map(Turn::new).collect();
         Self { combo }
     }
 }
@@ -53,8 +53,8 @@ impl Lock {
 
     fn enter_turn(&mut self, turn: Turn) {
         match turn {
-            Turn::Left(x) => self.current = self.current - x,
-            Turn::Right(x) => self.current = self.current + x,
+            Turn::Left(x) => self.current -= x,
+            Turn::Right(x) => self.current += x,
         }
     }
 }
