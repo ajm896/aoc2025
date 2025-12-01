@@ -76,7 +76,7 @@ pub fn solution(input: String) -> i8 {
 mod test {
     use super::*;
 
-    const test_input: &str = "L68\nL30\nR48\nL5\nR60\nL55\nL1\nL99\nR14\nL82";
+    const TEST_INPUT: &str = "L68\nL30\nR48\nL5\nR60\nL55\nL1\nL99\nR14\nL82";
     #[test]
     fn test_default_lock() {
         assert_eq!(
@@ -110,7 +110,7 @@ mod test {
 
     #[test]
     fn provided_test_case() {
-        let sol = solution(test_input.to_string());
+        let sol = solution(TEST_INPUT.to_string());
         assert_eq!(sol, 3);
     }
 }
