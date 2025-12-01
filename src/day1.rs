@@ -2,8 +2,8 @@ extern crate regex;
 
 #[derive(PartialEq, Eq, Debug)]
 enum Turn {
-    Left(u8),
-    Right(u8),
+    Left(i8),
+    Right(i8),
 }
 
 #[derive(PartialEq, Eq, Debug)]
@@ -25,7 +25,7 @@ impl Turn {
             .captures(line)
             .unwrap_or_else(|| panic!("invalid turn: {}", line));
         let dir = caps.get(1).unwrap().as_str();
-        let num: u8 = caps.get(2).unwrap().as_str().parse().unwrap();
+        let num: i8 = caps.get(2).unwrap().as_str().parse().unwrap();
         match dir {
             "R" => Self::Right(num),
             "L" => Self::Left(num),
@@ -36,12 +36,12 @@ impl Turn {
 
 #[derive(PartialEq, Eq, Debug)]
 struct Lock {
-    counts: [u8; 99],
-    current: u8,
+    counts: [i8; 99],
+    current: i8,
 }
 
 impl Lock {
-    fn new(start_num: u8) -> Self {
+    fn new(start_num: i8) -> Self {
         let counts = [0; 99];
         let current = start_num;
         Lock { counts, current }
@@ -51,16 +51,23 @@ impl Lock {
         Self::new(0)
     }
 
+    #[allow(dead_code)]
     fn enter_turn(&mut self, turn: Turn) {
         match turn {
-            Turn::Left(x) => self.current -= x,
-            Turn::Right(x) => self.current += x,
+            Turn::Left(x) => {
+                if (self.current - x) < 0 {
+                    self.current = 100 + self.current;
+                }
+                self.current -= x;
+            }
+            Turn::Right(x) => self.current = (self.current + x) % 99,
         }
     }
 }
 
-pub fn solution(input: String) -> u8 {
+pub fn solution(input: String) -> i8 {
     let combo = Combo::new(input);
+    let _lock = Lock::default();
     println!("{:?}", combo);
     3
 }
@@ -69,6 +76,7 @@ pub fn solution(input: String) -> u8 {
 mod test {
     use super::*;
 
+    const test_input: &str = "L68\nL30\nR48\nL5\nR60\nL55\nL1\nL99\nR14\nL82";
     #[test]
     fn test_default_lock() {
         assert_eq!(
@@ -87,17 +95,21 @@ mod test {
     }
 
     #[test]
+    fn test_turn_right() {
+        let mut lock = Lock::default();
+        lock.enter_turn(Turn::Right(1));
+        assert_eq!(lock.current, 1);
+    }
+
+    #[test]
+    fn test_turn_left() {
+        let mut lock = Lock::default();
+        lock.enter_turn(Turn::Left(1));
+        assert_eq!(lock.current, 99);
+    }
+
+    #[test]
     fn provided_test_case() {
-        let test_input = "L68\n\
-        L30\n\
-R48\n\
-L5\n\
-R60\n\
-L55\n\
-L1\n\
-L99\n\
-R14\n\
-L82";
         let sol = solution(test_input.to_string());
         assert_eq!(sol, 3);
     }

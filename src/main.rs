@@ -11,7 +11,6 @@ fn main() {
 
 fn load_day(input: &str) -> String {
     let path = Path::new("inputs").join(input);
-    
 
     read_to_string(&path).unwrap_or_else(|_| panic!("missing input file: {:?}", path))
 }
