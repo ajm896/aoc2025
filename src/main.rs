@@ -1,12 +1,12 @@
 use std::{fs::read_to_string, path::Path};
 
-use crate::day1::solution;
-
 mod day1;
 
 fn main() {
-    let input = load_day("day1_input");
-    solution(input);
+    let input = load_day("day1");
+    let mut lock = day1::Lock::default();
+    let ans = day1::solution(input, &mut lock);
+    println!("{}", ans);
 }
 
 fn load_day(input: &str) -> String {
